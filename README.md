@@ -67,4 +67,10 @@ Remove torrent file with data.
 - `set_priority(torrentid, priority, fileindex):`
 Set priority to each file in a torrent.
 
+- `add_file(file_path):`
+Add torrent file to download.
+
+- `add_url(fiel_path):`
+Add torrent URL to download (magnet link).
+
 MIT License
