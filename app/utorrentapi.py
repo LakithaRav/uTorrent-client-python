@@ -3,6 +3,62 @@ import base64
 import json
 from lxml import html
 
+class StatusInfo:
+    def __init__(self, data):
+        mask = 1
+        self.started = (data & mask) != 0
+        mask *= 2
+        self.checking = (data & mask) != 0
+        mask *= 2
+        self.start_after_check = (data & mask) != 0
+        mask *= 2
+        self.checked = (data & mask) != 0
+        mask *= 2
+        self.error = (data & mask) != 0
+        mask *= 2
+        self.paused = (data & mask) != 0
+        mask *= 2
+        self.queued = (data & mask) != 0
+        mask *= 2
+        self.loaded = (data & mask) != 0
+        mask *= 2
+
+class TorrentInfo:
+    def __init__(self, data):
+        ind = 0
+        self.hash = data[0]
+        self.status = StatusInfo(data[1])
+        self.name = data[2]
+        self.size = data[3] # in bytes
+        self.percent_progress = data[4] # in mils
+        self.downloaded = data[5] # in bytes
+        self.uploaded = data[6] # in bytes
+        self.ratio = data[7] # in mils
+        self.upload_speed = data[8] # in bytes per second
+        self.download_speed = data[9] # in bytes per second
+        self.eta = data[10] # in seconds
+        self.label = data[11]
+        self.peers_connected = data[12]
+        self.peers_in_swarm = data[13]
+        self.seeds_connected = data[14]
+        self.seeds_in_swarm = data[15]
+        self.availability = data[16] # int in 1/65535
+        self.torrent_queue_order = data[17]
+        self.remaining = data[18] # in bytes
+
+class LabelInfo:
+    def __init__(self, data):
+        self.label = data[0]
+        self.torrents_in_label = data[1]
+
+class TorrentListInfo:
+    def __init__(self, data):
+        self.build = data['build']
+        self.labels = [LabelInfo(x) for x in data['label']]
+        self.torrents = [TorrentInfo(x) for x in data['torrents']]
+        self.torrent_cache_id = data['torrentc']
+
+
 class UTorrentAPI(object):
 
     def __init__(self, base_url, username, password):
@@ -202,6 +258,9 @@ class UTorrentAPI(object):
         }
         try:
             response = requests.get(url, auth=self.auth, cookies=self.cookies, headers=headers)
+            # use utf8 for multi-language 
+            # default is ISO-8859-1
+            response.encoding = 'utf8'
         except requests.ConnectionError as error:
             print(error)
         except:

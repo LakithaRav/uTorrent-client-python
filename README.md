@@ -32,6 +32,20 @@ Ex;
 apiclient = UTorrentAPI('http://127.0.0.1:35653/gui', 'admin', 'laky123')
 ```
 
+### 4. use helper class
+Import this
+
+```python
+from utorrentapi import TorrentListInfo
+```
+
+Use like this
+```python
+data = apiclient.get_list()
+tor_list = TorrentListInfo(data)
+filename = tor_list.torrents[0].name 
+```
+
 ## API Methods
 
 - `get_list():`
