@@ -58,7 +58,19 @@ class TorrentListInfo:
         self.torrents = [TorrentInfo(x) for x in data['torrents']]
         self.torrent_cache_id = data['torrentc']
 
+class FileInfo:
+    def __init__(self, data):
+        self.name = data[0]
+        self.size = data[1]
+        self.downloaded = data[2]
+        self.priority = data[3]
 
+class FileListInfo:
+    def __init__(self, data):
+        self.build = data['build']
+        self.hash = data['files'][0]
+        self.files = [FileInfo(x) for x in data['files'][1]]
+        
 class UTorrentAPI(object):
 
     def __init__(self, base_url, username, password):
@@ -109,7 +121,7 @@ class UTorrentAPI(object):
         try:
             status, response = self._action('list=1')
             if status == 200:
-                torrents = response.json()
+                torrents = TorrentListInfo(response.json())
             else:
                 print(response.status_code)
 
@@ -127,7 +139,7 @@ class UTorrentAPI(object):
         files = []
 
         if status == 200:
-            files = response.json()
+            files = FileListInfo(response.json())
         else:
             print(response.status_code)
 
