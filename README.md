@@ -15,7 +15,7 @@ $ source env/bin/activate
 ### 2. Activate uTorrent WEB UI
 To use this library you first need to activate uTorrent/bitTorrent Web UI and configure the credentials and ports.
 
-### 3. inport UTorrentAPI
+### 3. Import UTorrentAPI
 In your code import the library as;
 
 ```python
